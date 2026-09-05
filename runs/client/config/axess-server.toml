@@ -1,0 +1,30 @@
+#The maximum amount a reader can stay on for with the PULSE option selected.
+# Default: 200
+# Range: 1 ~ 1200
+max_reader_powered_ticks = 200
+#The maximum amount of networks a player can own.
+# Default: 5
+# Range: 1 ~ 20
+max_networks_per_player = 5
+#The maximum amount of access levels a network can have.
+# Default: 20
+# Range: 1 ~ 100
+max_levels_per_network = 20
+#The maximum amount of networks operators can own.
+# Default: 10
+# Range: 1 ~ 20
+op_max_networks_per_player = 10
+#The maximum amount of access levels a network can have (for server operators).
+# Default: 40
+# Range: 1 ~ 100
+op_max_levels_per_network = 40
+#The maximum distance there can be between two linked devices.
+# Default: 32
+# Range: 1 ~ 100
+max_link_distance = 32
+#The maximum amount of links a reader can have.
+# Default: 5
+# Range: 0 ~ 20
+max_links_reader = 5
+#[EXPERIMENTAL] ENABLE THIS ONLY IF YOU WANT EVERYONE TO BE ABLE TO EDIT EVERY NETWORK (DANGEROUS)
+experimental_let_everyone_edit_everything = false

@@ -1,0 +1,59 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.1.36'
+}
+
+version = mod_version
+group = mod_group_id
+
+base { archivesName = mod_id }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://cursemaven.com/'; content { includeGroup 'curse.maven' } }
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+}
+
+runs {
+    configureEach {
+        workingDirectory project.layout.projectDirectory.dir('runs').dir(name)
+        modSource project.sourceSets.main
+    }
+    client { }
+    server { argument '--nogui' }
+    gameTestServer { }
+    data {
+        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    }
+}
+
+configurations { runtimeClasspath.extendsFrom localRuntime }
+
+dependencies {
+    implementation "net.neoforged:neoforge:${neo_version}"
+    implementation('org.reflections:reflections:0.10.2') {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
+    implementation 'io.github.classgraph:classgraph:4.8.115'
+
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+tasks.named('processResources', ProcessResources).configure {
+    def props = [minecraft_version:minecraft_version, minecraft_version_range:minecraft_version_range,
+                 neo_version:neo_version, loader_version_range:loader_version_range,
+                 mod_id:mod_id, mod_name:mod_name, mod_license:mod_license, mod_version:mod_version,
+                 mod_authors:mod_authors, mod_description:mod_description]
+    inputs.properties props
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) { expand props + [project: project] }
+}
+
+// Data-generation helpers from the old Forge build use APIs that were redesigned for 1.21.
+// They are not needed at runtime and are intentionally excluded from the Java compilation.
+sourceSets.main.java { exclude '**/datagen/**' }
